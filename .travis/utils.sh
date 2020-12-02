@@ -8,8 +8,8 @@ get_version() {
 # Build and test docker images
 build_docker_image() {
     version=$( get_version )
-    docker build -t ferrarimarco/github-changelog-generator:manifest-${PLAT}-${version} .
-    docker run --rm -i ferrarimarco/github-changelog-generator:manifest-${PLAT}-${version}
+    docker build -t odidev/github-changelog-generator:manifest-${PLAT}-${version} .
+    docker run --rm -i odidev/github-changelog-generator:manifest-${PLAT}-${version}
 }
 
 # Function usages: upload docker image/manifest
@@ -26,12 +26,12 @@ docker_push (){
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
     if [ ! -z "${plat}" ] && [ ! -z "${version}" ]; then
-        image="ferrarimarco/github-changelog-generator:manifest-${plat}-${version}"
+        image="odidev/github-changelog-generator:manifest-${plat}-${version}"
         flag=""
     elif [ ! -z "${version}" ]; then
-        image="ferrarimarco/github-changelog-generator:manifest-${version}"
+        image="odidev/github-changelog-generator:manifest-${version}"
     else
-        image="ferrarimarco/github-changelog-generator:manifest-latest"
+        image="odidev/github-changelog-generator:manifest-latest"
     fi
     echo "docker ${flag} push ${image}"
     docker ${flag} push ${image}
@@ -48,7 +48,7 @@ create_multiarch_manifest(){
     version="$1"
     multiarch_manifest=${2:-$version}
     docker manifest create \
-        ferrarimarco/github-changelog-generator:manifest-${multiarch_manifest} \
-        --amend ferrarimarco/github-changelog-generator:manifest-amd64-${version} \
-        --amend ferrarimarco/github-changelog-generator:manifest-arm64-${version}
+        odidev/github-changelog-generator:manifest-${multiarch_manifest} \
+        --amend odidev/github-changelog-generator:manifest-amd64-${version} \
+        --amend odidev/github-changelog-generator:manifest-arm64-${version}
 }
